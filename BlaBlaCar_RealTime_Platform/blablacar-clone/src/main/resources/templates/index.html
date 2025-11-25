@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BlaBlaCar - Your Ridesharing Platform</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/" class="logo">🚗 BlaBlaCar</a>
+            <div class="nav-links">
+                <a href="/search">Search Rides</a>
+                <a href="/publish-ride">Publish a Ride</a>
+                <a href="/login" class="btn btn-primary">Login</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <h1>Your pick of rides at low prices</h1>
+        <p>Find a ride anywhere, anytime</p>
+    </section>
+
+    <div class="search-box">
+        <form action="/search" method="get" class="search-form">
+            <div class="form-group">
+                <label>Leaving from</label>
+                <input type="text" name="from" class="form-control" placeholder="Enter city" required>
+            </div>
+            <div class="form-group">
+                <label>Going to</label>
+                <input type="text" name="to" class="form-control" placeholder="Enter city" required>
+            </div>
+            <div class="form-group">
+                <label>Date</label>
+                <input type="date" name="date" class="form-control" th:min="${#temporals.format(#temporals.createToday(), 'yyyy-MM-dd')}">
+            </div>
+            <button type="submit" class="btn btn-primary">Search</button>
+        </form>
+    </div>
+
+    <div class="container">
+        <h2 style="margin-bottom: 30px;">🔥 Popular Rides</h2>
+        <div th:if="${recentRides != null and !recentRides.isEmpty()}">
+            <div th:each="ride : ${recentRides}" class="ride-card">
+                <div class="ride-header">
+                    <div class="driver-info">
+                        <div class="driver-avatar" th:text="${#strings.substring(ride.driver.firstName, 0, 1)}"></div>
+                        <div>
+                            <div class="driver-name" th:text="${ride.driver.fullName}"></div>
+                            <div class="rating">⭐ <span th:text="${ride.driver.rating}"></span></div>
+                        </div>
+                    </div>
+                    <span class="badge badge-success" th:if="${ride.instantBooking}">Instant Booking</span>
+                </div>
+
+                <div class="ride-route">
+                    <div class="route-point">
+                        <div class="route-label">From</div>
+                        <div class="route-city" th:text="${ride.departureCity}"></div>
+                        <div class="route-time" th:text="${ride.departureTime}"></div>
+                    </div>
+                    <div class="route-arrow">→</div>
+                    <div class="route-point">
+                        <div class="route-label">To</div>
+                        <div class="route-city" th:text="${ride.destinationCity}"></div>
+                    </div>
+                </div>
+
+                <div class="ride-details">
+                    <div class="detail-item">
+                        📅 <span th:text="${ride.departureDate}"></span>
+                    </div>
+                    <div class="detail-item">
+                        💺 <span th:text="${ride.availableSeats} + ' seats available'"></span>
+                    </div>
+                    <div class="detail-item" th:if="${ride.smokingAllowed}">
+                        🚭 No smoking
+                    </div>
+                    <div class="detail-item" th:if="${ride.musicAllowed}">
+                        🎵 Music OK
+                    </div>
+                </div>
+
+                <div class="ride-footer">
+                    <div class="price">
+                        ₹<span th:text="${ride.pricePerSeat}"></span>
+                        <small>per seat</small>
+                    </div>
+                    <a th:href="@{/ride/{id}(id=${ride.id})}" class="btn btn-primary">View Details</a>
+                </div>
+            </div>
+        </div>
+
+        <div th:if="${recentRides == null or recentRides.isEmpty()}" class="empty-state">
+            <h3>No rides available</h3>
+            <p>Be the first to publish a ride!</p>
+            <a href="/publish-ride" class="btn btn-primary">Publish a Ride</a>
+        </div>
+    </div>
+</body>
+</html>

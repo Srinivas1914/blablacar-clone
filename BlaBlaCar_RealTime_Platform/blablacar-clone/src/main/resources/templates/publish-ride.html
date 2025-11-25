@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Publish Ride - BlaBlaCar</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/" class="logo">🚗 BlaBlaCar</a>
+            <div class="nav-links">
+                <a href="/dashboard">Dashboard</a>
+                <a href="/logout">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container" style="max-width: 800px;">
+        <div class="ride-card">
+            <h2 style="margin-bottom: 30px;">Publish a Ride</h2>
+
+            <form method="post" action="/publish-ride">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <div class="form-group">
+                        <label>Departure City</label>
+                        <input type="text" name="departureCity" class="form-control" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Destination City</label>
+                        <input type="text" name="destinationCity" class="form-control" required>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <div class="form-group">
+                        <label>Departure Date</label>
+                        <input type="date" name="departureDate" class="form-control" 
+                               th:min="${#temporals.format(#temporals.createToday(), 'yyyy-MM-dd')}" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Departure Time</label>
+                        <input type="time" name="departureTime" class="form-control" required>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <div class="form-group">
+                        <label>Available Seats</label>
+                        <input type="number" name="totalSeats" class="form-control" min="1" max="8" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Price per Seat (₹)</label>
+                        <input type="number" name="pricePerSeat" class="form-control" min="0" step="10" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Additional Notes (optional)</label>
+                    <textarea name="notes" class="form-control" rows="3" 
+                              placeholder="Any specific pickup/drop points, luggage info, etc."></textarea>
+                </div>
+
+                <div style="background: var(--bg-light); padding: 20px; border-radius: 10px; margin: 20px 0;">
+                    <h4 style="margin-bottom: 15px;">Preferences</h4>
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;">
+                        <label style="display: flex; align-items: center; gap: 10px;">
+                            <input type="checkbox" name="instantBooking" checked>
+                            <span>Instant Booking</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 10px;">
+                            <input type="checkbox" name="musicAllowed" checked>
+                            <span>Music Allowed</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 10px;">
+                            <input type="checkbox" name="smokingAllowed">
+                            <span>Smoking Allowed</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 10px;">
+                            <input type="checkbox" name="petsAllowed">
+                            <span>Pets Allowed</span>
+                        </label>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block">Publish Ride</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Ride Details - BlaBlaCar</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/" class="logo">🚗 BlaBlaCar</a>
+            <div class="nav-links">
+                <a href="/dashboard">Dashboard</a>
+                <a href="/search">Search</a>
+                <a href="/logout">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container" style="max-width: 900px;">
+        <div th:if="${param.error}" class="alert alert-error" th:text="${param.error}"></div>
+
+        <div class="ride-card">
+            <div class="ride-route">
+                <div class="route-point">
+                    <div class="route-label">Departure</div>
+                    <div class="route-city" th:text="${ride.departureCity}"></div>
+                    <div class="route-time" th:text="${ride.departureDate + ' at ' + ride.departureTime}"></div>
+                </div>
+                <div class="route-arrow">→</div>
+                <div class="route-point">
+                    <div class="route-label">Arrival</div>
+                    <div class="route-city" th:text="${ride.destinationCity}"></div>
+                </div>
+            </div>
+
+            <div style="border-top: 1px solid var(--border-color); padding-top: 30px; margin-top: 30px;">
+                <h3 style="margin-bottom: 20px;">Driver Information</h3>
+                <div class="driver-info">
+                    <div class="driver-avatar" style="width: 70px; height: 70px; font-size: 28px;" 
+                         th:text="${#strings.substring(ride.driver.firstName, 0, 1)}"></div>
+                    <div>
+                        <div style="font-size: 20px; font-weight: 600;" th:text="${ride.driver.fullName}"></div>
+                        <div class="rating" style="font-size: 16px;">⭐ <span th:text="${ride.driver.rating}"></span></div>
+                        <div style="color: var(--text-light); margin-top: 5px;" th:text="${ride.driver.city}"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="border-top: 1px solid var(--border-color); padding-top: 30px; margin-top: 30px;">
+                <h3 style="margin-bottom: 20px;">Ride Details</h3>
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
+                    <div class="detail-item">💺 <span th:text="${ride.availableSeats} + ' / ' + ${ride.totalSeats} + ' seats available'"></span></div>
+                    <div class="detail-item">💰 ₹<span th:text="${ride.pricePerSeat}"></span> per seat</div>
+                    <div class="detail-item">🚗 <span th:text="${ride.driver.vehicleBrand + ' ' + ride.driver.vehicleModel}"></span></div>
+                    <div class="detail-item" th:if="${!ride.smokingAllowed}">🚭 No smoking</div>
+                    <div class="detail-item" th:if="${ride.petsAllowed}">🐕 Pets allowed</div>
+                    <div class="detail-item" th:if="${ride.musicAllowed}">🎵 Music allowed</div>
+                </div>
+
+                <div th:if="${ride.notes}" style="margin-top: 20px; padding: 15px; background: var(--bg-light); border-radius: 10px;">
+                    <strong>Driver's note:</strong>
+                    <p style="margin-top: 10px;" th:text="${ride.notes}"></p>
+                </div>
+            </div>
+
+            <div th:if="${user.id != ride.driver.id}" style="border-top: 1px solid var(--border-color); padding-top: 30px; margin-top: 30px;">
+                <h3 style="margin-bottom: 20px;">Book This Ride</h3>
+                <form method="post" th:action="@{/book-ride/{id}(id=${ride.id})}">
+                    <div style="display: flex; gap: 15px; align-items: end;">
+                        <div class="form-group" style="flex: 1;">
+                            <label>Number of seats</label>
+                            <input type="number" name="seats" class="form-control" min="1" th:max="${ride.availableSeats}" value="1" required>
+                        </div>
+                        <div style="text-align: right;">
+                            <div style="color: var(--text-light); font-size: 14px;">Total Price</div>
+                            <div class="price" style="font-size: 32px;">₹<span id="totalPrice" th:text="${ride.pricePerSeat}"></span></div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Message to driver (optional)</label>
+                        <textarea name="message" class="form-control" rows="3" placeholder="Introduce yourself..."></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-block">
+                        <span th:if="${ride.instantBooking}">Book Instantly</span>
+                        <span th:unless="${ride.instantBooking}">Request to Book</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script th:inline="javascript">
+        const pricePerSeat = [[${ride.pricePerSeat}]];
+        document.querySelector('input[name="seats"]').addEventListener('input', function() {
+            document.getElementById('totalPrice').textContent = (this.value * pricePerSeat).toFixed(0);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Verify Login - BlaBlaCar</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/" class="logo">🚗 BlaBlaCar</a>
+        </div>
+    </nav>
+
+    <div class="container" style="max-width: 500px; margin-top: 60px;">
+        <div class="ride-card" style="text-align: center;">
+            <div style="font-size: 60px; margin-bottom: 20px;">🔐</div>
+            <h2>Enter Login OTP</h2>
+            <div class="alert alert-info">Check console for OTP (demo mode)</div>
+
+            <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
+
+            <form method="post" action="/verify-login">
+                <input type="hidden" name="userId" th:value="${userId}"/>
+                <div class="form-group">
+                    <input type="text" name="otp" class="form-control" placeholder="Enter 6-digit OTP" 
+                           maxlength="6" style="text-align: center; font-size: 24px; letter-spacing: 8px;" required autofocus>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Verify & Login</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

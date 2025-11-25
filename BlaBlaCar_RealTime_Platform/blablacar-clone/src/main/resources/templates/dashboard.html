@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard - BlaBlaCar</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/" class="logo">🚗 BlaBlaCar</a>
+            <div class="nav-links">
+                <a href="/search">Search Rides</a>
+                <a href="/publish-ride">Publish Ride</a>
+                <a href="/profile">Profile</a>
+                <a href="/logout" class="btn btn-secondary">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div th:if="${param.published}" class="alert alert-success">✅ Ride published successfully!</div>
+        <div th:if="${param.booked}" class="alert alert-success">✅ Ride booked successfully!</div>
+        <div th:if="${param.driver}" class="alert alert-success">✅ You're now a driver!</div>
+
+        <div class="dashboard-grid">
+            <div>
+                <div class="sidebar-card">
+                    <div class="profile-header">
+                        <div class="profile-avatar" th:text="${#strings.substring(user.firstName, 0, 1)}"></div>
+                        <div class="profile-name" th:text="${user.fullName}"></div>
+                        <div class="profile-rating">⭐ <span th:text="${user.rating}"></span></div>
+                    </div>
+
+                    <div style="margin-top: 30px;">
+                        <a th:if="${user.role.name() != 'DRIVER'}" href="/become-driver" class="btn btn-primary btn-block">
+                            🚗 Become a Driver
+                        </a>
+                        <a th:if="${user.role.name() == 'DRIVER'}" href="/publish-ride" class="btn btn-primary btn-block">
+                            ➕ Publish a Ride
+                        </a>
+                        <a href="/search" class="btn btn-secondary btn-block" style="margin-top: 10px;">
+                            🔍 Search Rides
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <div class="sidebar-card">
+                    <h3 style="margin-bottom: 20px;">📋 My Bookings</h3>
+                    <div th:if="${myBookings != null and !myBookings.isEmpty()}">
+                        <div th:each="booking : ${myBookings}" style="border-bottom: 1px solid var(--border-color); padding: 15px 0;">
+                            <div style="display: flex; justify-content: space-between; align-items: start;">
+                                <div>
+                                    <div style="font-weight: 600;" th:text="${booking.ride.departureCity + ' → ' + booking.ride.destinationCity}"></div>
+                                    <div style="color: var(--text-light); font-size: 14px; margin-top: 5px;">
+                                        📅 <span th:text="${booking.ride.departureDate}"></span>
+                                        💺 <span th:text="${booking.seatsBooked}"></span> seats
+                                    </div>
+                                    <span th:class="'badge ' + (${booking.status.name() == 'CONFIRMED'} ? 'badge-success' : 'badge-warning')" 
+                                          th:text="${booking.status}" style="margin-top: 10px;"></span>
+                                </div>
+                                <div style="text-align: right;">
+                                    <div class="price" style="font-size: 20px;">₹<span th:text="${booking.totalPrice}"></span></div>
+                                    <form th:if="${booking.status.name() != 'CANCELLED'}" method="post" 
+                                          th:action="@{/booking/{id}/cancel(id=${booking.id})}">
+                                        <button type="submit" class="btn btn-secondary" style="padding: 6px 12px; font-size: 12px; margin-top: 10px;">Cancel</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div th:if="${myBookings == null or myBookings.isEmpty()}" class="empty-state">
+                        <p>No bookings yet</p>
+                    </div>
+                </div>
+
+                <div th:if="${user.role.name() == 'DRIVER'}" class="sidebar-card" style="margin-top: 30px;">
+                    <h3 style="margin-bottom: 20px;">🚗 My Published Rides</h3>
+                    <div th:if="${myRides != null and !myRides.isEmpty()}">
+                        <div th:each="ride : ${myRides}" style="border-bottom: 1px solid var(--border-color); padding: 15px 0;">
+                            <div style="font-weight: 600;" th:text="${ride.departureCity + ' → ' + ride.destinationCity}"></div>
+                            <div style="color: var(--text-light); font-size: 14px; margin-top: 5px;">
+                                📅 <span th:text="${ride.departureDate}"></span> | 
+                                💺 <span th:text="${ride.availableSeats + '/' + ride.totalSeats}"></span> | 
+                                👁️ <span th:text="${ride.views}"></span> views
+                            </div>
+                            <span th:class="'badge badge-' + (${ride.status.name() == 'ACTIVE'} ? 'success' : 'info')" 
+                                  th:text="${ride.status}" style="margin-top: 10px;"></span>
+                        </div>
+                    </div>
+                    <div th:if="${myRides == null or myRides.isEmpty()}" class="empty-state">
+                        <p>No published rides</p>
+                        <a href="/publish-ride" class="btn btn-primary">Publish Your First Ride</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

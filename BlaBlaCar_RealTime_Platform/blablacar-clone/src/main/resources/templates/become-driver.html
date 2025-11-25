@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Become a Driver - BlaBlaCar</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/" class="logo">🚗 BlaBlaCar</a>
+            <div class="nav-links">
+                <a href="/dashboard">Dashboard</a>
+                <a href="/logout">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container" style="max-width: 700px;">
+        <div class="ride-card">
+            <div style="text-align: center; margin-bottom: 30px;">
+                <h2>Become a Driver</h2>
+                <p style="color: var(--text-light);">Add your vehicle details to start offering rides</p>
+            </div>
+
+            <form method="post" action="/become-driver">
+                <div class="form-group">
+                    <label>Vehicle Brand</label>
+                    <input type="text" name="vehicleBrand" class="form-control" placeholder="e.g., Toyota" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Vehicle Model</label>
+                    <input type="text" name="vehicleModel" class="form-control" placeholder="e.g., Innova" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Vehicle Color</label>
+                    <input type="text" name="vehicleColor" class="form-control" placeholder="e.g., White" required>
+                </div>
+
+                <div class="form-group">
+                    <label>License Plate</label>
+                    <input type="text" name="licensePlate" class="form-control" placeholder="e.g., TS 09 AB 1234" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Number of Seats</label>
+                    <input type="number" name="vehicleSeats" class="form-control" min="1" max="8" required>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block">Complete Registration</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
